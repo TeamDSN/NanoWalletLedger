@@ -1,0 +1,72 @@
+{
+  "_args": [
+    [
+      "@ledgerhq/hw-transport-webusb@4.48.0",
+      "/home/son-fds/Projects/github/NanoWalletLedger"
+    ]
+  ],
+  "_from": "@ledgerhq/hw-transport-webusb@4.48.0",
+  "_id": "@ledgerhq/hw-transport-webusb@4.48.0",
+  "_inBundle": false,
+  "_integrity": "sha512-D39yUyLLMamymLVF0OW6oNDORvgjjGwMBCbewoodSn5+89aZOLBglXfV+YBE4LDhKb7ziwk5112ut7Bk61j62Q==",
+  "_location": "/@ledgerhq/hw-transport-webusb",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "version",
+    "registry": true,
+    "raw": "@ledgerhq/hw-transport-webusb@4.48.0",
+    "name": "@ledgerhq/hw-transport-webusb",
+    "escapedName": "@ledgerhq%2fhw-transport-webusb",
+    "scope": "@ledgerhq",
+    "rawSpec": "4.48.0",
+    "saveSpec": null,
+    "fetchSpec": "4.48.0"
+  },
+  "_requiredBy": [
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/@ledgerhq/hw-transport-webusb/-/hw-transport-webusb-4.48.0.tgz",
+  "_spec": "4.48.0",
+  "_where": "/home/son-fds/Projects/github/NanoWalletLedger",
+  "bugs": {
+    "url": "https://github.com/LedgerHQ/ledgerjs/issues"
+  },
+  "dependencies": {
+    "@ledgerhq/devices": "^4.48.0",
+    "@ledgerhq/errors": "^4.48.0",
+    "@ledgerhq/hw-transport": "^4.48.0"
+  },
+  "description": "Ledger Hardware Wallet WebUSB implementation of the communication layer",
+  "devDependencies": {
+    "flow-bin": "^0.94.0",
+    "flow-typed": "^2.3.0"
+  },
+  "gitHead": "ae4f6034a9364c12212060fd46e39bdaf14d562e",
+  "homepage": "https://github.com/LedgerHQ/ledgerjs",
+  "keywords": [
+    "Ledger",
+    "LedgerWallet",
+    "webusb",
+    "NanoS",
+    "Blue",
+    "Hardware Wallet"
+  ],
+  "license": "Apache-2.0",
+  "main": "lib/TransportWebUSB.js",
+  "name": "@ledgerhq/hw-transport-webusb",
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LedgerHQ/ledgerjs.git"
+  },
+  "scripts": {
+    "build": "bash ../../script/build.sh",
+    "clean": "bash ../../script/clean.sh",
+    "doc": "bash ../../script/doc.sh",
+    "flow": "flow",
+    "watch": "bash ../../script/watch.sh"
+  },
+  "version": "4.48.0"
+}

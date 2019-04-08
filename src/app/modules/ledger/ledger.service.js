@@ -1,6 +1,6 @@
 import nem from 'nem-sdk';
 import NemH from "./hw-app-nem";
-import TransportWebUSB from "@ledgerhq/hw-transport-webusb";
+import TransportWebUSB from "./hw-transport-webusb";
 
 /** Service storing Trezor utility functions. */
 class Ledger {

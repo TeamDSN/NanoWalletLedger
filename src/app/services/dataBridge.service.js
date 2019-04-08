@@ -2,7 +2,6 @@ import nem from 'nem-sdk';
 
 /** Service to open connection, store and process data received from websocket. */
 class DataBridge {
-
     /**
      * Initialize dependencies and properties
      *
@@ -19,6 +18,7 @@ class DataBridge {
         this._$filter = $filter;
         this._Nodes = Nodes;
         this._DataStore = DataStore;
+        this.DEFAULT_HTTPS_PORT = 7779;
 
         //// End dependencies region ////
 
@@ -371,7 +371,7 @@ class DataBridge {
         // Set a random endpoint into the Wallet service
         this._Nodes.update();
         // Set websocket port to endpoint for connector
-        let endpoint = nem.model.objects.create("endpoint")(this._Wallet.node.host, nem.model.nodes.websocketPort);
+        let endpoint = nem.model.objects.create("endpoint")(this._Wallet.node.host, this.DEFAULT_HTTPS_PORT);
         // Update connector
         connector = nem.com.websockets.connector.create(endpoint, this._Wallet.currentAccount.address);
         // Try to open connection
@@ -387,7 +387,7 @@ class DataBridge {
         this._Nodes.setDefault();
         this._Nodes.setUtil();
         // Change endpoint port to websocket port
-        let endpoint = nem.model.objects.create("endpoint")(this._Wallet.node.host, nem.model.nodes.websocketPort);
+        let endpoint = nem.model.objects.create("endpoint")(this._Wallet.node.host, this.DEFAULT_HTTPS_PORT);
         // Create a connector
         let connector = nem.com.websockets.connector.create(endpoint, this._Wallet.currentAccount.address);
         // Try to open the connection 

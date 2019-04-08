@@ -3,7 +3,6 @@ import UrlParser from 'url-parse';
 
 /** Service with functions regarding the nodes */
 class Nodes {
-
     /**
      * Initialize dependencies and properties
      *
@@ -19,6 +18,7 @@ class Nodes {
         this._Alert = Alert;
         this._$filter = $filter;
         this._$timeout = $timeout;
+        this.DEFAULT_HTTPS_PORT = 7891;
 
         //// End dependencies region ////
     }
@@ -49,6 +49,25 @@ class Nodes {
         if (this._Wallet.network == nem.model.network.data.mainnet.id) {
             if (this._storage.selectedMainnetNode) {
                 this._Wallet.node = this._storage.selectedMainnetNode;
+            } else if (typeof carlo !== 'undefined') {
+                let endpoint = nem.model.objects.create("endpoint")('https://shibuya.supernode.me', this.DEFAULT_HTTPS_PORT);
+                this._Wallet.node = endpoint;
+                this._Wallet.nodes = [
+                    {
+                        uri: 'https://shibuya.supernode.me'
+                    }, {
+                        uri: 'https://la.nemchina.com'
+                    }, {
+                        uri: 'https://public.nemchina.com'
+                    }, {
+                        uri: 'https://frankfurt.nemchina.com'
+                    }, {
+                        uri: 'https://tokyo.nemchina.com'
+                    }, {
+                        uri: 'https://london.nemchina.com'
+                    }
+                ];
+                return;
             } else {
                 let endpoint = nem.model.objects.create("endpoint")(nem.model.nodes.mainnet[0].uri, nem.model.nodes.defaultPort);
                 this._Wallet.node = endpoint;
@@ -57,6 +76,15 @@ class Nodes {
         } else if (this._Wallet.network == nem.model.network.data.testnet.id) {
             if (this._storage.selectedTestnetNode) {
                 this._Wallet.node = this._storage.selectedTestnetNode;
+            } else if (typeof carlo !== 'undefined') {
+                let endpoint = nem.model.objects.create("endpoint")('https://nis-testnet.44uk.net', this.DEFAULT_HTTPS_PORT);
+                this._Wallet.node = endpoint;
+                this._Wallet.nodes = [
+                    {
+                        uri: 'https://nis-testnet.44uk.net'
+                    }
+                ];
+                return;
             } else {
                 let endpoint = nem.model.objects.create("endpoint")("http://hugetestalice.nem.ninja", nem.model.nodes.defaultPort);
                 this._Wallet.node = endpoint;

@@ -61,7 +61,8 @@
   },
   "scripts": {
     "test": "gulp tests browserifyTests",
-    "devApp": "nw build/"
+    "devApp": "nw build/",
+    "cold": "node app.js"
   },
   "repository": {
     "type": "git",
