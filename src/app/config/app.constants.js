@@ -8,9 +8,9 @@ const AppConstants = {
     defaultNetwork: 104,
 
     // Ports
-    defaultNisPort: 7890,
+    defaultNisPort: 7891,
     defaultMijinPort: 7895,
-    defaultWebsocketPort: 7778,
+    defaultWebsocketPort: 7779,
 
     // Activate/Deactivate mainnet
     mainnetDisabled: false,

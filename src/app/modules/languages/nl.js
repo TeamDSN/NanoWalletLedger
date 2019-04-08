@@ -785,6 +785,11 @@ function DutchProvider($translateProvider) {
         TREZOR_TEXT: 'De TREZOR hardware portemonnee maakt veilig werken met XEM, Mozaïeken en Multi-handtekening accounts mogelijk',
         TREZOR_BUTTON: 'Aanmelden met TREZOR',
 
+        // NANO LEDGER RELATED
+        NANO_LEDGER_TITLE: 'NANO LEDGER',
+        NANO_LEDGER_TEXT: 'De NANO LEDGER hardware portemonnee maakt veilig werken met XEM, Mozaïeken en Multi-handtekening accounts mogelijk',
+        NANO_LEDGER_BUTTON: 'Aanmelden met NANO LEDGER',
+
         // CREATE OFFLINE TRANSACTION MODULE
         OFFLINE_TX_TITLE: 'Bereid een offline transactie voor',
         OFFLINE_TX_NO_WALLET: 'Importeer een portemonnee vanuit de login module om dit formulier te zien.',

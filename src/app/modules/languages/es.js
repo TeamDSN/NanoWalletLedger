@@ -775,6 +775,11 @@ function SpanishProvider($translateProvider) {
         TREZOR_TEXT: 'La cartera de TREZOR te permite asegurar tu XEM, mosaicos y cuentas multifirma',
         TREZOR_BUTTON: 'Ingresar con TREZOR',
 
+        // NANO LEDGER RELATED
+        NANO_LEDGER_TITLE: 'NANO LEDGER',
+        NANO_LEDGER_TEXT: 'La cartera de NANO LEDGER te permite asegurar tu XEM, mosaicos y cuentas multifirma',
+        NANO_LEDGER_BUTTON: 'Ingresar con NANO LEDGER',
+
         // CREATE OFFLINE TRANSACTION MODULE
         OFFLINE_TX_TITLE: 'Preparar una transacción fuera de línea',
         OFFLINE_TX_NO_WALLET: 'Por favor importa una cartera desde el módulo de ingresar, para ver el formulario.',

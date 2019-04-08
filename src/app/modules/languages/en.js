@@ -786,6 +786,11 @@ function EnglishProvider($translateProvider) {
         TREZOR_TEXT: 'The TREZOR hardware wallet allows you to secure your XEM, mosaics and multisig accounts',
         TREZOR_BUTTON: 'Login with TREZOR',
 
+        // NANO LEDGER RELATED
+        NANO_LEDGER_TITLE: 'NANO LEDGER',
+        NANO_LEDGER_TEXT: 'The NANO LEDGER hardware wallet allows you to secure your XEM, mosaics and multisig accounts',
+        NANO_LEDGER_BUTTON: 'Login with NANO LEDGER',
+
         // CREATE OFFLINE TRANSACTION MODULE
         OFFLINE_TX_TITLE: 'Prepare an offline transaction',
         OFFLINE_TX_NO_WALLET: 'Please import a wallet from login module to see the form.',

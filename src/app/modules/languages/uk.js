@@ -786,6 +786,11 @@ function UkrainianProvider($translateProvider) {
         TREZOR_TEXT: 'Апаратний гаманець TREZOR дозволяє захистити Ваші XEM, мозаїки та мультипідписні облікові записи',
         TREZOR_BUTTON: 'Здійснити вхід за допомогою апаратного гаманця TREZOR',
 
+        // NANO LEDGER RELATED
+        NANO_LEDGER_TITLE: 'NANO LEDGER',
+        NANO_LEDGER_TEXT: 'Апаратний гаманець NANO LEDGER дозволяє захистити Ваші XEM, мозаїки та мультипідписні облікові записи',
+        NANO_LEDGER_BUTTON: 'Здійснити вхід за допомогою апаратного гаманця NANO LEDGER',
+
         // CREATE OFFLINE TRANSACTION MODULE
         OFFLINE_TX_TITLE: 'Підготувати offline транзакцію',
         OFFLINE_TX_NO_WALLET: 'Будь-ласка, імпортуйте гаманець із модулю входу, щоб побачити форму.',
