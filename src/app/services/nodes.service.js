@@ -112,10 +112,40 @@ class Nodes {
         let _endpoint;
         // Set node in local storage according to network
         if (this._Wallet.network == nem.model.network.data.mainnet.id) {
-            _endpoint = endpoint || nem.model.objects.create("endpoint")(nem.model.nodes.mainnet[Math.floor(Math.random()*nem.model.nodes.mainnet.length)].uri, nem.model.nodes.defaultPort);
+            if (typeof('carlo') !== 'undefined') {
+                _endpoint = nem.model.objects.create("endpoint")('https://shibuya.supernode.me', this.DEFAULT_HTTPS_PORT);
+                this._Wallet.node = endpoint;
+                this._Wallet.nodes = [
+                    {
+                        uri: 'https://shibuya.supernode.me'
+                    }, {
+                        uri: 'https://la.nemchina.com'
+                    }, {
+                        uri: 'https://public.nemchina.com'
+                    }, {
+                        uri: 'https://frankfurt.nemchina.com'
+                    }, {
+                        uri: 'https://tokyo.nemchina.com'
+                    }, {
+                        uri: 'https://london.nemchina.com'
+                    }
+                ];
+            } else {
+                _endpoint = endpoint || nem.model.objects.create("endpoint")(nem.model.nodes.mainnet[Math.floor(Math.random()*nem.model.nodes.mainnet.length)].uri, nem.model.nodes.defaultPort);
+            }
             this._storage.selectedMainnetNode = _endpoint;
         } else if (this._Wallet.network == nem.model.network.data.testnet.id) {
-            _endpoint = endpoint || nem.model.objects.create("endpoint")(nem.model.nodes.testnet[Math.floor(Math.random()*nem.model.nodes.testnet.length)].uri, nem.model.nodes.defaultPort);
+            if (typeof('carlo') !== 'undefined') {
+                _endpoint = nem.model.objects.create("endpoint")('https://nis-testnet.44uk.net', this.DEFAULT_HTTPS_PORT);
+                this._Wallet.node = endpoint;
+                this._Wallet.nodes = [
+                    {
+                        uri: 'https://nis-testnet.44uk.net'
+                    }
+                ];
+            } else {
+                _endpoint = endpoint || nem.model.objects.create("endpoint")(nem.model.nodes.testnet[Math.floor(Math.random()*nem.model.nodes.testnet.length)].uri, nem.model.nodes.defaultPort);
+            }
             this._storage.selectedTestnetNode = _endpoint;
         } else {
             _endpoint = endpoint || nem.model.objects.create("endpoint")(nem.model.nodes.mijin[Math.floor(Math.random()*nem.model.nodes.mijin.length)].uri, nem.model.nodes.mijinPort);

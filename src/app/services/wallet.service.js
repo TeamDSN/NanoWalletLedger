@@ -10,7 +10,7 @@ class Wallet {
      *
      * @params {services} - Angular services to inject
      */
-    constructor(AppConstants, $localStorage, Alert, $timeout, AddressBook, Trezor, DataStore) {
+    constructor(AppConstants, $localStorage, Alert, $timeout, AddressBook, Trezor, Ledger, DataStore) {
         'ngInject';
 
         //// Service dependencies region ////
@@ -21,6 +21,7 @@ class Wallet {
         this._$timeout = $timeout;
         this._AddressBook = AddressBook;
         this._Trezor = Trezor;
+        this._Ledger = Ledger;
         this._DataStore = DataStore;
 
         //// End dependencies region ////
@@ -265,6 +266,10 @@ class Wallet {
                 return this._Trezor.serialize(transaction, account).then((serialized) => {
                     return nem.com.requests.transaction.announce(this.node, JSON.stringify(serialized));
                 });
+            } else if (this.algo == "ledger") {
+                return this._Ledger.serialize(transaction, account).then((serialized) => {
+                    return nem.com.requests.transaction.announce(this.node, JSON.stringify(serialized));
+                });
             }
         }
         // Normal wallet
@@ -323,6 +328,8 @@ class Wallet {
         if (common.isHW) {
             if (algo == "trezor") {
                 return this._Trezor.deriveRemote(account, network);
+            } else if (algo == "ledger") {
+                return this._Ledger.deriveRemote(account, network);
             } else {
                 return Promise.reject(true);
             }
@@ -417,6 +424,8 @@ class Wallet {
         if (common.isHW) {
             if (primary.algo == "trezor") {
                 return this._Trezor.createAccount(primary.network, newAccountIndex, label);
+            } else if (primary.algo == "ledger") {
+                return this._Ledger.createAccount(primary.network, newAccountIndex, label);
             } else {
                 return Promise.reject(true);
             }

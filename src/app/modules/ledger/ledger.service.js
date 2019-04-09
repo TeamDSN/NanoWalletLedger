@@ -51,7 +51,7 @@ class Ledger {
         return nemH.getAddress(hdKeypath)
             .then(result => ({
                 "brain": false,
-                "algo": "trezor",
+                "algo": "ledger",
                 "encrypted": "",
                 "iv": "",
                 "address": result.address,
