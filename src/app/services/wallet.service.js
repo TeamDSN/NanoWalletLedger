@@ -266,7 +266,8 @@ class Wallet {
                 return this._Trezor.serialize(transaction, account).then((serialized) => {
                     return nem.com.requests.transaction.announce(this.node, JSON.stringify(serialized));
                 });
-            } else if (this.algo == "ledger") {
+            } 
+            else if (this.algo == "ledger") {
                 return this._Ledger.serialize(transaction, account).then((serialized) => {
                     return nem.com.requests.transaction.announce(this.node, JSON.stringify(serialized));
                 });
