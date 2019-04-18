@@ -73,7 +73,20 @@ gulp.task('browserify', ['views'], function() {
 // Task for test files
 gulp.task('browserifyTests', function() {
   return browserify(specsArray)
-      .transform(babelify, {presets: ["es2015"]})
+      // .transform(babelify, {presets: ["es2015"]})
+      .transform(babelify.configure({
+        presets: [['es2015', {
+          targets: {
+            node: "current"
+          }
+        }]],
+        plugins: [
+          "syntax-dynamic-import",
+          "transform-runtime",
+          "transform-async-to-generator"
+        ],
+        ignore: /(bower_components)|(node_modules)/
+      }))
       .transform(ngAnnotate)
       .bundle()
       .on('error', interceptErrors)
