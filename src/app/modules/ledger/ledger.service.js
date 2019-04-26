@@ -1,5 +1,9 @@
 import NemH from "./hw-app-nem";
 import TransportWebUSB from "./hw-transport-webusb";
+import {
+    NEMLibrary, NetworkTypes, Account, TransferTransaction, TimeWindow,
+    TransactionHttp, XEM, PublicAccount
+} from "nem-library";
 
 const nemSDK = require("nem-sdk").default;
 var nemH;
@@ -72,15 +76,9 @@ class Ledger {
     serialize(transaction, account) {
         return new Promise((resolve, reject) => {
             //Transaction with testnet and mainnet
-            const tmpPrivateKey     = "9000000000000000000000000000000000000000000000000000000000000009";
-            const recipientAddress  = transaction.recipient;
-            const amount            = transaction.amount/1000000;
-            const message           = nemSDK.utils.convert.hex2a(transaction.message.payload);
 
-            //Create a hex transaction
-            let tx              = nemSDK.model.objects.create("transferTransaction")(recipientAddress, amount, message);
-            let entity          = nemSDK.model.transactions.prepare("transferTransaction")({privateKey: `${tmpPrivateKey}`}, tx, account.network);
-            let serializedTx    = nemSDK.utils.convert.ua2hex(nemSDK.utils.serialization.serializeTransaction(entity));
+            //serialize the transaction
+            let serializedTx    = nemSDK.utils.convert.ua2hex(nemSDK.utils.serialization.serializeTransaction(transaction));
 
             //Replace publicKey by new publicKey
             let signingBytes    = serializedTx.slice(0, 32) + account.publicKey + serializedTx.slice(32 + 64, serializedTx.length);

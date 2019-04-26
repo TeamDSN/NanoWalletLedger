@@ -46,7 +46,7 @@
           <!-- Transaction fee -->
           <fee-input tx="$ctrl.preparedTransaction" is-multisig="$ctrl.formData.isMultisig"></fee-input>
           <!-- Enable / Disable mosaic transfer -->
-          <fieldset class="form-group text-center">
+          <fieldset class="form-group text-center" ng-show="$ctrl._Wallet.algo !== 'ledger'">
             <input id="box2" type="checkbox" ng-model="$ctrl.isMosaicTransfer" ng-change="$ctrl.setMosaicTransfer();">
             <label for="box2">{{'TRANSFER_TRANSACTION_MOSAIC_TRANSFER' | translate}}</label>
           </fieldset>
