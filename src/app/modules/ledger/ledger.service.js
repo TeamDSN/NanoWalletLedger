@@ -1,13 +1,6 @@
 import NemH from "./hw-app-nem";
 import TransportWebUSB from "./hw-transport-webusb";
-<<<<<<< HEAD
-import {
-    NEMLibrary, NetworkTypes, Account, TransferTransaction, TimeWindow,
-    TransactionHttp, XEM, PublicAccount
-} from "nem-library";
-=======
 import nem from "nem-sdk";
->>>>>>> Update add more account feature. Fix hex message type.
 
 var nemH;
 
@@ -79,17 +72,15 @@ class Ledger {
     serialize(transaction, account) {
         return new Promise((resolve, reject) => {
             //Transaction with testnet and mainnet
-<<<<<<< HEAD
-
-            //serialize the transaction
-            let serializedTx    = nemSDK.utils.convert.ua2hex(nemSDK.utils.serialization.serializeTransaction(transaction));
-=======
             //Serialize the transaction
             let serializedTx    = nem.utils.convert.ua2hex(nem.utils.serialization.serializeTransaction(transaction));
->>>>>>> Update add more account feature. Fix hex message type.
 
             //Replace publicKey by new publicKey
             let signingBytes    = serializedTx.slice(0, 32) + account.publicKey + serializedTx.slice(32 + 64, serializedTx.length);
+            console.log("serializedTx: ");
+            console.log(serializedTx);
+            console.log("signingBytes: ");
+            console.log(signingBytes);
 
             nemH.signTransaction(account.hdKeypath, signingBytes)
             .then(sig => {
