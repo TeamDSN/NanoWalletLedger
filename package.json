@@ -46,6 +46,7 @@
     "nem-sdk": "1.6.7",
     "nem-trezor": "^1.1.0",
     "nem-voting": "^2.1.2",
+    "nexe": "^3.2.0",
     "ng-toast": "2.0.0",
     "ngstorage": "0.3.10",
     "nw": "^0.26.6",
@@ -62,7 +63,10 @@
   "scripts": {
     "test": "gulp tests browserifyTests",
     "devApp": "nw build/",
-    "cold": "node app.js"
+    "cold-wallet": "node app.js",
+    "build-cold-wallet-linux-x64": "nexe app.js -r build -t linux-x64 -o nanowallet-linux-x64",
+    "build-cold-wallet-win32-x64": "nexe app.js -r build -t win32-x64 -o nanowallet-win32-x64",
+    "build-cold-wallet-macos-x64": "nexe app.js -r build -t macos-x64 -o nanowallet-macos-x64"
   },
   "repository": {
     "type": "git",
