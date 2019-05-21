@@ -1,4 +1,5 @@
 import BIPPath from "bip32-path";
+import nem from "nem-sdk";
 
 /**
  * NEM API
@@ -16,7 +17,8 @@ import BIPPath from "bip32-path";
  */
 
 
-const MAX_CHUNK_SIZE = 256;
+const MAX_CHUNK_SIZE = 255;
+// const MAX_CHUNK_SIZE = 512;
 
 
 export default class Nem {
@@ -83,16 +85,24 @@ export default class Nem {
     const curveMask = 0x80;
 
     const apdus = [];
-    let offset = 0;
+    let   offset = 0;
+    let   twiceTransfer;
+
+    //The length of APDU buffer is 255Bytes
+    if (rawTx.length > 468) {
+      return new Error("The transaction is too long.");
+    } else {
+      twiceTransfer = rawTx.length > 234 ? true : false ; 
+    }
 
     while (offset !== rawTx.length) {
       const maxChunkSize = offset === 0 ? MAX_CHUNK_SIZE - 1 - bipPath.length * 4 : MAX_CHUNK_SIZE;
       const chunkSize = offset + maxChunkSize > rawTx.length ? rawTx.length - offset : maxChunkSize;
       const apdu = {
-        cla: 0xe0,
-        ins: 0x04,
-        p1: offset === 0 ? 0x00 : 0x80,
-        p2: curveMask,
+        cla:  0xe0,
+        ins:  0x04,
+        p1:   offset === 0 ? 0x00 : 0x80,
+        p2:   curveMask,
         data: offset === 0 ? Buffer.alloc(1 + bipPath.length * 4 + chunkSize) : Buffer.alloc(chunkSize)
       };
 
@@ -102,6 +112,9 @@ export default class Nem {
           apdu.data.writeUInt32BE(segment, 1 + index * 4);
         });
         rawTx.copy(apdu.data, 1 + bipPath.length * 4, offset, offset + chunkSize);
+        if (!twiceTransfer) {
+          apdu.p1 = 0x90;
+        }
       } else {
         rawTx.copy(apdu.data, 0, offset, offset + chunkSize);
       }

@@ -72,20 +72,21 @@ class Ledger {
     serialize(transaction, account) {
         return new Promise((resolve, reject) => {
             //Transaction with testnet and mainnet
+            //Correct the signer
+            transaction.signer = account.publicKey;
+
+            //If it is a MosaicDefinition Creation Transaction, then correct the creator
+            if (transaction.type == 0x4001) {
+                transaction.mosaicDefinition.creator = account.publicKey;
+            }
+
             //Serialize the transaction
             let serializedTx    = nem.utils.convert.ua2hex(nem.utils.serialization.serializeTransaction(transaction));
 
-            //Replace publicKey by new publicKey
-            let signingBytes    = serializedTx.slice(0, 32) + account.publicKey + serializedTx.slice(32 + 64, serializedTx.length);
-            console.log("serializedTx: ");
-            console.log(serializedTx);
-            console.log("signingBytes: ");
-            console.log(signingBytes);
-
-            nemH.signTransaction(account.hdKeypath, signingBytes)
+            nemH.signTransaction(account.hdKeypath, serializedTx)
             .then(sig => {
                 let payload = {
-                    data: signingBytes,
+                    data: serializedTx,
                     signature: sig.signature
                 }
                 resolve(payload);

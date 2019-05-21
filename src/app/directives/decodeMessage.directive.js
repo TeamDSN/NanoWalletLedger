@@ -31,7 +31,6 @@ function DecodeMessage(Wallet, Recipient, Alert, $timeout, $filter, $sanitize) {
                 // If not the sender, use signer public key for decryption
                 if(kp.publicKey.toString() !== tx.signer) {
                     scope.processDecode(tx.signer, tx);
-                    console.log(tx);
                 } else {
                     // Get the recipient account data for the public key
                     Recipient.getAccount(tx.recipient).then((res) => {
