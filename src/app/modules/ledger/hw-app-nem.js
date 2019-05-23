@@ -16,10 +16,7 @@ import nem from "nem-sdk";
 
  */
 
-
 const MAX_CHUNK_SIZE = 255;
-// const MAX_CHUNK_SIZE = 512;
-
 
 export default class Nem {
 
