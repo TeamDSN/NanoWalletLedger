@@ -15,7 +15,7 @@ describe("Ledger service", function() {
     LedgerService = _Ledger_;
   }));
 
-  it ("Create bip44 path for testnet NetWork", function() {
+  it ("Has right bip44 path for testnet NetWork", function() {
     // GIVEN
     let expectedResult = "44'/43'/152'/0'/0'";
 
@@ -26,7 +26,7 @@ describe("Ledger service", function() {
     expect(expectedResult).toBe(result);
   });
 
-  it ("Create bip44 path for main NetWork", function() {
+  it ("Has right bip44 path for main NetWork", function() {
     // GIVEN
     let expectedResult = "44'/43'/104'/0'/0'";
 
@@ -37,23 +37,22 @@ describe("Ledger service", function() {
     expect(expectedResult).toBe(result);
   });
 
-  // it ("Create an account", function(done) {
-  //   let network = -104;
-  //   let index = 0;
-  //   let label = "Primary";
-  //   var transport = jasmine.createSpyObj('TransportWebUSB', [ 'decorateAppAPIMethods', 'method2' ]);
-  //   transport.decorateAppAPIMethods.and.callFake(function() {
-  //     return 'test';
-  //   });
-  //   spyOn(TransportWebUSB, 'create').and.returnValue(Promise.resolve(transport));
-  //   spyOn(LedgerService, 'getAccount').and.returnValue(Promise.resolve('result'));
-  //   LedgerService.createAccount(network, index, label).then((result) => {
-  //     console.log('result: ' + result);
-  //     expect(LedgerService.getAccount).toHaveBeenCalledWith(152, 0, "Primary");
-  //     expect(result).toEqual('result');
-  //     done();
-  //   });
-  // });
+  it ("Can get account", function(done) {
+    let network = -104;
+    let index = 0;
+    let label = "Primary";
+    var transport = jasmine.createSpyObj('TransportWebUSB', [ 'decorateAppAPIMethods', 'method2' ]);
+    transport.decorateAppAPIMethods.and.callFake(function() {
+      return 'test';
+    });
+    spyOn(LedgerService, 'getAccount').and.returnValue(Promise.resolve('result'));
+    LedgerService.createAccount(network, index, label).then((result) => {
+      console.log('result: ' + result);
+      expect(LedgerService.getAccount).toHaveBeenCalledWith("44'/43'/152'/0'/0'", network, label);
+      expect(result).toEqual('result');
+      done();
+    });
+  });
 
   it ("Can get wallet", async function(done) {
     // GIVEN

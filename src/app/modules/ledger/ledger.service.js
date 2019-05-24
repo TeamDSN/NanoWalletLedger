@@ -45,10 +45,6 @@ class Ledger {
     }
 
     async createAccount(network, index, label) {
-        const transport = await TransportWebUSB.create()
-        .catch(err => console.log(err));
-
-        nemH = new NemH(transport);
         const hdKeypath = this.bip44(network, index);
         const result = await this.getAccount(hdKeypath, network, label);
         return result;
@@ -80,6 +76,11 @@ class Ledger {
     }
 
     async getAccount(hdKeypath, network, label) {
+        const transport = await TransportWebUSB.create()
+        .catch(err => console.log(err));
+
+        nemH = new NemH(transport);
+
         let result = await nemH.getAddress(hdKeypath)
         .catch(err => console.log(err));
         return ({
