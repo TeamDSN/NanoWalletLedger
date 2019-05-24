@@ -8,7 +8,6 @@ describe("Ledger service", function() {
 
   beforeEach(function() {
      angular.mock.module('app');
-     jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
   });
 
   beforeEach(angular.mock.inject(function(_Ledger_) {
@@ -37,24 +36,24 @@ describe("Ledger service", function() {
     expect(expectedResult).toBe(result);
   });
 
-  it ("Can get account", function(done) {
+  it ("Can get account from ledger", async function(done) {
+    // GIVEN
     let network = -104;
     let index = 0;
     let label = "Primary";
-    var transport = jasmine.createSpyObj('TransportWebUSB', [ 'decorateAppAPIMethods', 'method2' ]);
-    transport.decorateAppAPIMethods.and.callFake(function() {
-      return 'test';
-    });
-    spyOn(LedgerService, 'getAccount').and.returnValue(Promise.resolve('result'));
-    LedgerService.createAccount(network, index, label).then((result) => {
-      console.log('result: ' + result);
-      expect(LedgerService.getAccount).toHaveBeenCalledWith("44'/43'/152'/0'/0'", network, label);
-      expect(result).toEqual('result');
-      done();
-    });
+    spyOn(LedgerService, 'getAccount').and.returnValue(Promise.resolve('getAccount() result'));
+    let expetedResult = 'getAccount() result';
+
+    // WHEN
+    let result = await LedgerService.createAccount(network, index, label)
+
+    // THEN
+    expect(LedgerService.getAccount).toHaveBeenCalledWith("44'/43'/152'/0'/0'", network, label);
+    expect(result).toEqual(expetedResult);
+    done();
   });
 
-  it ("Can get wallet", async function(done) {
+  it ("Can get wallet from ledger account", async function(done) {
     // GIVEN
     spyOn(LedgerService, 'createAccount').and.returnValue(Promise.resolve('account'));
     let expectedResult = ({
@@ -103,6 +102,7 @@ describe("Ledger service", function() {
       $$hashKey:"object:141"
     };
     spyOn(LedgerService, 'signTransaction').and.returnValue(Promise.resolve('payload'));
+    let expetedResult = 'payload';
 
     // WHEN
     let result = await LedgerService.serialize(transaction, account).catch(err => {
@@ -111,7 +111,7 @@ describe("Ledger service", function() {
 
     // THEN
     expect(LedgerService.signTransaction).toHaveBeenCalled();
-    expect(result).toEqual('payload');
+    expect(result).toEqual(expetedResult);
     done();
   });
 });
