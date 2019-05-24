@@ -46,31 +46,19 @@ class Ledger {
 
     async createAccount(network, index, label) {
         const transport = await TransportWebUSB.create()
-            .catch(err => console.log(err));
+        .catch(err => console.log(err));
+
         nemH = new NemH(transport);
         const hdKeypath = this.bip44(network, index);
-        return nemH.getAddress(hdKeypath)
-            .then(result => {
-                return ({
-                "brain": false,
-                "algo": "ledger",
-                "encrypted": "",
-                "iv": "",
-                "address": result.address,
-                "label": label,
-                "network": network,
-                "child": "",
-                "hdKeypath": hdKeypath,
-                "publicKey": result.publicKey
-            })})
-            .catch(err => console.log(err));
+        const result = await this.getAccount(hdKeypath, network, label);
+        return result;
     }
 
     deriveRemote(account, network) {
     }
 
     serialize(transaction, account) {
-        return new Promise((resolve, reject) => {
+        return new Promise(async (resolve, reject) => {
             //Transaction with testnet and mainnet
             //Correct the signer
             transaction.signer = account.publicKey;
@@ -83,21 +71,43 @@ class Ledger {
             //Serialize the transaction
             let serializedTx    = nem.utils.convert.ua2hex(nem.utils.serialization.serializeTransaction(transaction));
 
-            nemH.signTransaction(account.hdKeypath, serializedTx)
-            .then(sig => {
-                let payload = {
-                    data: serializedTx,
-                    signature: sig.signature
-                }
-                resolve(payload);
-            })
-            .catch(err => {
-                reject(err);
-            });
+            let payload = await this.signTransaction(account, serializedTx);
+            resolve(payload);
         });
     }
 
     showAccount(account) {
+    }
+
+    async getAccount(hdKeypath, network, label) {
+        let result = await nemH.getAddress(hdKeypath)
+        .catch(err => console.log(err));
+        return ({
+            "brain": false,
+            "algo": "ledger",
+            "encrypted": "",
+            "iv": "",
+            "address": result.address,
+            "label": label,
+            "network": network,
+            "child": "",
+            "hdKeypath": hdKeypath,
+            "publicKey": result.publicKey
+        })
+    }
+
+    async signTransaction(account, serializedTx) {
+        let sig = await nemH.signTransaction(account.hdKeypath, serializedTx)
+        .catch(err => {
+            console.error('Error: ' + err);
+            return null;
+        });
+
+        let payload = {
+            data: serializedTx,
+            signature: sig.signature
+        }
+        return payload;
     }
 
     // End methods region //
