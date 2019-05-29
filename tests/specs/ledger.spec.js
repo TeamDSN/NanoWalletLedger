@@ -1,5 +1,3 @@
-import Ledger from "../../src/app/modules/ledger/ledger.service";
-import TransportWebUSB from "../../src/app/modules/ledger/hw-transport-webusb";
 import { fail } from "assert";
 
 describe("Ledger service", function() {
