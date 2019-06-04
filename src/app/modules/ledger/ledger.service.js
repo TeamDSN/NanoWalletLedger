@@ -2,7 +2,7 @@ import NemH from "./hw-app-nem";
 import TransportWebUSB from "./hw-transport-webusb";
 import nem from "nem-sdk";
 
-var nemH;
+// var nemH;
 
 /** Service storing Ledger utility functions. */
 class Ledger {
@@ -12,16 +12,30 @@ class Ledger {
      *
      * @params {services} - Angular services to inject
      */
-    constructor() {
+    constructor(Alert) {
         'ngInject';
 
         // Service dependencies region //
+
+        this._Alert = Alert;
 
         // End dependencies region //
 
         // Service properties region //
 
         // End properties region //
+
+        // Initialization
+        this.init();
+    }
+
+    /**
+     * Initialize module properties
+     */
+
+    init() {
+        // The connection between Nano Wallet and Ledger Device
+        this.nemH = undefined;
     }
 
     // Service methods region //
@@ -34,7 +48,9 @@ class Ledger {
                     "0": account
                 }
             }))
-            .catch(err => console.log(err));
+            .catch(err => {
+                throw err;
+            });
     }
 
     bip44(network, index) {
@@ -46,28 +62,33 @@ class Ledger {
 
     async createAccount(network, index, label) {
         const transport = await TransportWebUSB.create()
-            .catch(err => console.log(err));
-        nemH = new NemH(transport);
+            .catch(err => {
+                throw err.message;
+            });
+        this.nemH = new NemH(transport);
+
         const hdKeypath = this.bip44(network, index);
-        return nemH.getAddress(hdKeypath)
+        return this.nemH.getAddress(hdKeypath)
             .then(result => {
                 return ({
-                "brain": false,
-                "algo": "ledger",
-                "encrypted": "",
-                "iv": "",
-                "address": result.address,
-                "label": label,
-                "network": network,
-                "child": "",
-                "hdKeypath": hdKeypath,
-                "publicKey": result.publicKey
-            })})
-            .catch(err => console.log(err));
+                    "brain": false,
+                    "algo": "ledger",
+                    "encrypted": "",
+                    "iv": "",
+                    "address": result.address,
+                    "label": label,
+                    "network": network,
+                    "child": "",
+                    "hdKeypath": hdKeypath,
+                    "publicKey": result.publicKey
+                })
+            })
+            .catch(err => {
+                throw err;
+            });
     }
 
-    deriveRemote(account, network) {
-    }
+    deriveRemote(account, network) {}
 
     serialize(transaction, account) {
         return new Promise((resolve, reject) => {
@@ -81,24 +102,24 @@ class Ledger {
             }
 
             //Serialize the transaction
-            let serializedTx    = nem.utils.convert.ua2hex(nem.utils.serialization.serializeTransaction(transaction));
+            let serializedTx = nem.utils.convert.ua2hex(nem.utils.serialization.serializeTransaction(transaction));
 
-            nemH.signTransaction(account.hdKeypath, serializedTx)
-            .then(sig => {
-                let payload = {
-                    data: serializedTx,
-                    signature: sig.signature
-                }
-                resolve(payload);
-            })
-            .catch(err => {
-                reject(err);
-            });
+            this.nemH.signTransaction(account.hdKeypath, serializedTx)
+                .then(sig => {
+                    let payload = {
+                        data: serializedTx,
+                        signature: sig.signature
+                    }
+                    resolve(payload);
+                })
+                .catch(err => {
+                    this._Alert.createWalletFailed(err);
+                    reject(err);
+                });
         });
     }
 
-    showAccount(account) {
-    }
+    showAccount(account) {}
 
     // End methods region //
 

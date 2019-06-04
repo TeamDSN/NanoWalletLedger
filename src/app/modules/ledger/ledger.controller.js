@@ -36,6 +36,9 @@ class LedgerCtrl {
          */
         this.networks = nem.model.network.data;
 
+        // Prevent user to click twice on send when already processing
+        this.okPressed = false;
+
         //// End properties region ////
     }
 
@@ -66,17 +69,19 @@ class LedgerCtrl {
      * Login with LEDGER
      */
     login() {
+        this.okPressed = true;
         this._Ledger.createWallet(this.network)
-        .then( wallet => {
-            this._Login.login({}, wallet);
-        })
-        .catch(error => {
-            this._$timeout(() => {
-                this._Alert.createWalletFailed(error);
+            .then(wallet => {
+                this._Login.login({}, wallet);
+                this.okPressed = false;
+            })
+            .catch(error => {
+                this._$timeout(() => {
+                    this._Alert.createWalletFailed(error);
+                });
+                this.okPressed = false;
             });
-        });
     }
-
 
     //// End methods region ////
 
