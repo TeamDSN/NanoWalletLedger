@@ -2,8 +2,6 @@ import NemH from "./hw-app-nem";
 import TransportWebUSB from "./hw-transport-webusb";
 import nem from "nem-sdk";
 
-// var nemH;
-
 /** Service storing Ledger utility functions. */
 class Ledger {
 
@@ -16,7 +14,6 @@ class Ledger {
         'ngInject';
 
         // Service dependencies region //
-
         this._Alert = Alert;
 
         // End dependencies region //
@@ -61,37 +58,15 @@ class Ledger {
     }
 
     async createAccount(network, index, label) {
-        const transport = await TransportWebUSB.create()
-            .catch(err => {
-                throw err.message;
-            });
-        this.nemH = new NemH(transport);
-
         const hdKeypath = this.bip44(network, index);
-        return this.nemH.getAddress(hdKeypath)
-            .then(result => {
-                return ({
-                    "brain": false,
-                    "algo": "ledger",
-                    "encrypted": "",
-                    "iv": "",
-                    "address": result.address,
-                    "label": label,
-                    "network": network,
-                    "child": "",
-                    "hdKeypath": hdKeypath,
-                    "publicKey": result.publicKey
-                })
-            })
-            .catch(err => {
-                throw err;
-            });
+        const result = await this.getAccount(hdKeypath, network, label);
+        return result;
     }
 
     deriveRemote(account, network) {}
 
     serialize(transaction, account) {
-        return new Promise((resolve, reject) => {
+        return new Promise(async(resolve, reject) => {
             //Transaction with testnet and mainnet
             //Correct the signer
             transaction.signer = account.publicKey;
@@ -104,22 +79,55 @@ class Ledger {
             //Serialize the transaction
             let serializedTx = nem.utils.convert.ua2hex(nem.utils.serialization.serializeTransaction(transaction));
 
-            this.nemH.signTransaction(account.hdKeypath, serializedTx)
-                .then(sig => {
-                    let payload = {
-                        data: serializedTx,
-                        signature: sig.signature
-                    }
-                    resolve(payload);
-                })
+            let payload = await this.signTransaction(account, serializedTx)
                 .catch(err => {
                     this._Alert.createWalletFailed(err);
                     reject(err);
                 });
+            resolve(payload);
         });
     }
 
     showAccount(account) {}
+
+    async getAccount(hdKeypath, network, label) {
+        const transport = await TransportWebUSB.create()
+            .catch(err => {
+                throw err.message;
+            });
+
+        this.nemH = new NemH(transport);
+
+        let result = await this.nemH.getAddress(hdKeypath)
+            .catch(err => {
+                throw err;
+            });
+        return ({
+            "brain": false,
+            "algo": "ledger",
+            "encrypted": "",
+            "iv": "",
+            "address": result.address,
+            "label": label,
+            "network": network,
+            "child": "",
+            "hdKeypath": hdKeypath,
+            "publicKey": result.publicKey
+        })
+    }
+
+    async signTransaction(account, serializedTx) {
+        let sig = await this.nemH.signTransaction(account.hdKeypath, serializedTx)
+            .catch(err => {
+                throw err;
+            });
+
+        let payload = {
+            data: serializedTx,
+            signature: sig.signature
+        }
+        return payload;
+    }
 
     // End methods region //
 
