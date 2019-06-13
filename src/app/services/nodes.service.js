@@ -77,9 +77,12 @@ class Nodes {
             if (this._storage.selectedTestnetNode) {
                 this._Wallet.node = this._storage.selectedTestnetNode;
             } else if (typeof carlo !== 'undefined') {
-                let endpoint = nem.model.objects.create("endpoint")('https://nis-testnet.44uk.net', this.DEFAULT_HTTPS_PORT);
+                let endpoint = nem.model.objects.create("endpoint")('https://planethouki.ddns.net', this.DEFAULT_HTTPS_PORT);
                 this._Wallet.node = endpoint;
                 this._Wallet.nodes = [
+                    {
+                        uri: 'https://planethouki.ddns.net'
+                    },
                     {
                         uri: 'https://nis-testnet.44uk.net'
                     }
@@ -136,9 +139,12 @@ class Nodes {
             this._storage.selectedMainnetNode = _endpoint;
         } else if (this._Wallet.network == nem.model.network.data.testnet.id) {
             if (typeof('carlo') !== 'undefined') {
-                _endpoint = nem.model.objects.create("endpoint")('https://nis-testnet.44uk.net', this.DEFAULT_HTTPS_PORT);
+                _endpoint = nem.model.objects.create("endpoint")('https://planethouki.ddns.net', this.DEFAULT_HTTPS_PORT);
                 this._Wallet.node = endpoint;
                 this._Wallet.nodes = [
+                    {
+                        uri: 'https://planethouki.ddns.net'
+                    },
                     {
                         uri: 'https://nis-testnet.44uk.net'
                     }
