@@ -86,7 +86,7 @@ export default class Nem {
         let twiceTransfer;
 
         //The length of APDU buffer is 255Bytes
-        if (rawTx.length > 468) {
+        if (rawTx.length > 446) {
             throw new Error("The transaction is too long.");
         } else {
             twiceTransfer = rawTx.length > 234 ? true : false;
