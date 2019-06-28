@@ -73,9 +73,15 @@ class NodeCtrl {
         this._DataStore.connection.status = false;
         // Reset data in DataBridge service
         this._DataBridge.reset();
-                
-        // Change endpoint port to websocket port
-        let endpointWs = nem.model.objects.create("endpoint")(endpoint.host, nem.model.nodes.websocketPort);
+
+        let endpointWs;
+        if (typeof carlo !== 'undefined') {
+            // Change endpoint port to websocket port
+            endpointWs = nem.model.objects.create("endpoint")(endpoint.host, 7779);
+        } else {
+            // Change endpoint port to websocket port
+            endpointWs = nem.model.objects.create("endpoint")(endpoint.host, nem.model.nodes.websocketPort);
+        }
         // Create a connector
         let connector = nem.com.websockets.connector.create(endpointWs, this._Wallet.currentAccount.address);
         // Open the connection with the connector

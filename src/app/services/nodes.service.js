@@ -1,7 +1,49 @@
 import nem from 'nem-sdk';
 import UrlParser from 'url-parse';
 
-/** Service with functions regarding the nodes */
+let mainNodesHttps = [
+    {
+        uri: 'https://shibuya.supernode.me'
+    }, {
+        uri: 'https://la.nemchina.com'
+    }, {
+        uri: 'https://public.nemchina.com'
+    }, {
+        uri: 'https://frankfurt.nemchina.com'
+    }, {
+        uri: 'https://tokyo.nemchina.com'
+    }, {
+        uri: 'https://london.nemchina.com'
+    }, {
+        uri: 'https://beny.supernode.me'
+    }, {
+        uri: 'https://nemlovely1.supernode.me'
+    }, {
+        uri: 'https://nemlovely2.supernode.me'
+    }, {
+        uri: 'https://nemlovely3.supernode.me'
+    }, {
+        uri: 'https://nemlovely4.supernode.me'
+    }, {
+        uri: 'https://nemlovely5.supernode.me'
+    }, {
+        uri: 'https://nemlovely6.supernode.me'
+    }
+];
+
+let testNodesHttps = [
+    {
+        uri: 'https://planethouki.ddns.net'
+    },
+    {
+        uri: 'https://nis-testnet.44uk.net'
+    },
+    {
+        uri: 'https://nis-testnet.44uk.net'
+    }
+];
+
+    /** Service with functions regarding the nodes */
 class Nodes {
     /**
      * Initialize dependencies and properties
@@ -30,10 +72,18 @@ class Nodes {
      */
     setUtil() {
         if (this._Wallet.network === nem.model.network.data.testnet.id) {
-            this._Wallet.searchNode = nem.model.objects.create("endpoint")(nem.model.nodes.searchOnTestnet[0].uri, nem.model.nodes.defaultPort);
+            if (typeof('carlo') !== 'undefined') {
+                this._Wallet.searchNode = nem.model.objects.create("endpoint")(testNodesHttps[0].uri, this.DEFAULT_HTTPS_PORT);
+            } else {
+                this._Wallet.searchNode = nem.model.objects.create("endpoint")(nem.model.nodes.searchOnTestnet[0].uri, nem.model.nodes.defaultPort);
+            }
             this._Wallet.chainLink = nem.model.nodes.testnetExplorer;
         } else if (this._Wallet.network === nem.model.network.data.mainnet.id) {
-            this._Wallet.searchNode = nem.model.objects.create("endpoint")(nem.model.nodes.searchOnMainnet[0].uri, nem.model.nodes.defaultPort);
+            if (typeof('carlo') !== 'undefined') {
+                this._Wallet.searchNode = nem.model.objects.create("endpoint")(mainNodesHttps[0].uri, this.DEFAULT_HTTPS_PORT);
+            } else {
+                this._Wallet.searchNode = nem.model.objects.create("endpoint")(nem.model.nodes.searchOnMainnet[0].uri, nem.model.nodes.defaultPort);
+            }
             this._Wallet.chainLink = nem.model.nodes.mainnetExplorer;
         } else {
             this._Wallet.searchNode = nem.model.objects.create("endpoint")(nem.model.nodes.searchOnMijin[0].uri, nem.model.nodes.mijinPort);
@@ -49,50 +99,31 @@ class Nodes {
         if (this._Wallet.network == nem.model.network.data.mainnet.id) {
             if (this._storage.selectedMainnetNode) {
                 this._Wallet.node = this._storage.selectedMainnetNode;
-            } else if (typeof carlo !== 'undefined') {
+                this._Wallet.nodes = mainNodesHttps;
+            } else if (typeof('carlo') !== 'undefined') {
                 let endpoint = nem.model.objects.create("endpoint")('https://shibuya.supernode.me', this.DEFAULT_HTTPS_PORT);
                 this._Wallet.node = endpoint;
-                this._Wallet.nodes = [
-                    {
-                        uri: 'https://shibuya.supernode.me'
-                    }, {
-                        uri: 'https://la.nemchina.com'
-                    }, {
-                        uri: 'https://public.nemchina.com'
-                    }, {
-                        uri: 'https://frankfurt.nemchina.com'
-                    }, {
-                        uri: 'https://tokyo.nemchina.com'
-                    }, {
-                        uri: 'https://london.nemchina.com'
-                    }
-                ];
+                this._Wallet.nodes = mainNodesHttps;
                 return;
             } else {
                 let endpoint = nem.model.objects.create("endpoint")(nem.model.nodes.mainnet[0].uri, nem.model.nodes.defaultPort);
                 this._Wallet.node = endpoint;
+                this._Wallet.nodes = nem.model.nodes.mainnet;
             }
-            this._Wallet.nodes = nem.model.nodes.mainnet;
         } else if (this._Wallet.network == nem.model.network.data.testnet.id) {
             if (this._storage.selectedTestnetNode) {
                 this._Wallet.node = this._storage.selectedTestnetNode;
-            } else if (typeof carlo !== 'undefined') {
+                this._Wallet.nodes = testNodesHttps;
+            } else if (typeof('carlo') !== 'undefined') {
                 let endpoint = nem.model.objects.create("endpoint")('https://planethouki.ddns.net', this.DEFAULT_HTTPS_PORT);
                 this._Wallet.node = endpoint;
-                this._Wallet.nodes = [
-                    {
-                        uri: 'https://planethouki.ddns.net'
-                    },
-                    {
-                        uri: 'https://nis-testnet.44uk.net'
-                    }
-                ];
+                this._Wallet.nodes = testNodesHttps;
                 return;
             } else {
                 let endpoint = nem.model.objects.create("endpoint")("http://hugetestalice.nem.ninja", nem.model.nodes.defaultPort);
                 this._Wallet.node = endpoint;
+                this._Wallet.nodes = nem.model.nodes.testnet;
             }
-            this._Wallet.nodes = nem.model.nodes.testnet;
         } else {
             if (this._storage.selectedMijinNode) {
                 this._Wallet.node = this._storage.selectedMijinNode;
@@ -116,39 +147,20 @@ class Nodes {
         // Set node in local storage according to network
         if (this._Wallet.network == nem.model.network.data.mainnet.id) {
             if (typeof('carlo') !== 'undefined') {
-                _endpoint = nem.model.objects.create("endpoint")('https://shibuya.supernode.me', this.DEFAULT_HTTPS_PORT);
+                // _endpoint = nem.model.objects.create("endpoint")('https://shibuya.supernode.me', this.DEFAULT_HTTPS_PORT);
                 this._Wallet.node = endpoint;
-                this._Wallet.nodes = [
-                    {
-                        uri: 'https://shibuya.supernode.me'
-                    }, {
-                        uri: 'https://la.nemchina.com'
-                    }, {
-                        uri: 'https://public.nemchina.com'
-                    }, {
-                        uri: 'https://frankfurt.nemchina.com'
-                    }, {
-                        uri: 'https://tokyo.nemchina.com'
-                    }, {
-                        uri: 'https://london.nemchina.com'
-                    }
-                ];
+                this._Wallet.nodes = mainNodesHttps;
+                _endpoint = endpoint || nem.model.objects.create("endpoint")(this._Wallet.nodes[Math.floor(Math.random()*this._Wallet.nodes.length)].uri, this.DEFAULT_HTTPS_PORT);
             } else {
                 _endpoint = endpoint || nem.model.objects.create("endpoint")(nem.model.nodes.mainnet[Math.floor(Math.random()*nem.model.nodes.mainnet.length)].uri, nem.model.nodes.defaultPort);
             }
             this._storage.selectedMainnetNode = _endpoint;
         } else if (this._Wallet.network == nem.model.network.data.testnet.id) {
             if (typeof('carlo') !== 'undefined') {
-                _endpoint = nem.model.objects.create("endpoint")('https://planethouki.ddns.net', this.DEFAULT_HTTPS_PORT);
+                // _endpoint = nem.model.objects.create("endpoint")('https://planethouki.ddns.net', this.DEFAULT_HTTPS_PORT);
                 this._Wallet.node = endpoint;
-                this._Wallet.nodes = [
-                    {
-                        uri: 'https://planethouki.ddns.net'
-                    },
-                    {
-                        uri: 'https://nis-testnet.44uk.net'
-                    }
-                ];
+                this._Wallet.nodes = testNodesHttps;
+                _endpoint = endpoint || nem.model.objects.create("endpoint")(this._Wallet.nodes[Math.floor(Math.random()*this._Wallet.nodes.length)].uri, this.DEFAULT_HTTPS_PORT);
             } else {
                 _endpoint = endpoint || nem.model.objects.create("endpoint")(nem.model.nodes.testnet[Math.floor(Math.random()*nem.model.nodes.testnet.length)].uri, nem.model.nodes.defaultPort);
             }
@@ -195,7 +207,9 @@ class Nodes {
         } else if (port) {
             endpoint.port = port;
         } else {
-            if (this._Wallet.network === nem.model.network.data.mainnet.id) {
+            if (typeof('carlo') !== 'undefined') {
+                endpoint.port = this.DEFAULT_HTTPS_PORT;
+            } else if (this._Wallet.network === nem.model.network.data.mainnet.id) {
                 endpoint.port = nem.model.nodes.defaultPort;
             } else if (this._Wallet.network === nem.model.network.data.testnet.id) {
                 endpoint.port = nem.model.nodes.defaultPort;
