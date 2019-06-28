@@ -1,49 +1,61 @@
 import nem from 'nem-sdk';
 import UrlParser from 'url-parse';
 
-let mainNodesHttps = [
-    {
+let mainNodesHttps = [{
         uri: 'https://shibuya.supernode.me'
-    }, {
+    },
+    {
         uri: 'https://la.nemchina.com'
-    }, {
+    },
+    {
         uri: 'https://public.nemchina.com'
-    }, {
+    },
+    {
         uri: 'https://frankfurt.nemchina.com'
-    }, {
+    },
+    {
         uri: 'https://tokyo.nemchina.com'
-    }, {
+    },
+    {
         uri: 'https://london.nemchina.com'
-    }, {
+    },
+    {
         uri: 'https://beny.supernode.me'
-    }, {
+    },
+    {
         uri: 'https://nemlovely1.supernode.me'
-    }, {
+    },
+    {
         uri: 'https://nemlovely2.supernode.me'
-    }, {
+    },
+    {
         uri: 'https://nemlovely3.supernode.me'
-    }, {
+    },
+    {
         uri: 'https://nemlovely4.supernode.me'
-    }, {
+    },
+    {
         uri: 'https://nemlovely5.supernode.me'
-    }, {
+    },
+    {
         uri: 'https://nemlovely6.supernode.me'
+    },
+    {
+        uri: 'https://stgnetwork.supernode.me'
+    },
+    {
+        uri: 'https://snnode.supernode.me'
+    },
+    {
+        uri: 'https://nemstrunk2.supernode.me'
     }
 ];
 
-let testNodesHttps = [
-    {
-        uri: 'https://planethouki.ddns.net'
-    },
-    {
-        uri: 'https://nis-testnet.44uk.net'
-    },
-    {
-        uri: 'https://nis-testnet.44uk.net'
-    }
-];
+let testNodesHttps = [{
+    uri: 'https://planethouki.ddns.net'
+}];
 
-    /** Service with functions regarding the nodes */
+/** Service with functions regarding the nodes */
 class Nodes {
     /**
      * Initialize dependencies and properties
@@ -150,9 +162,9 @@ class Nodes {
                 // _endpoint = nem.model.objects.create("endpoint")('https://shibuya.supernode.me', this.DEFAULT_HTTPS_PORT);
                 this._Wallet.node = endpoint;
                 this._Wallet.nodes = mainNodesHttps;
-                _endpoint = endpoint || nem.model.objects.create("endpoint")(this._Wallet.nodes[Math.floor(Math.random()*this._Wallet.nodes.length)].uri, this.DEFAULT_HTTPS_PORT);
+                _endpoint = endpoint || nem.model.objects.create("endpoint")(this._Wallet.nodes[Math.floor(Math.random() * this._Wallet.nodes.length)].uri, this.DEFAULT_HTTPS_PORT);
             } else {
-                _endpoint = endpoint || nem.model.objects.create("endpoint")(nem.model.nodes.mainnet[Math.floor(Math.random()*nem.model.nodes.mainnet.length)].uri, nem.model.nodes.defaultPort);
+                _endpoint = endpoint || nem.model.objects.create("endpoint")(nem.model.nodes.mainnet[Math.floor(Math.random() * nem.model.nodes.mainnet.length)].uri, nem.model.nodes.defaultPort);
             }
             this._storage.selectedMainnetNode = _endpoint;
         } else if (this._Wallet.network == nem.model.network.data.testnet.id) {
@@ -160,13 +172,13 @@ class Nodes {
                 // _endpoint = nem.model.objects.create("endpoint")('https://planethouki.ddns.net', this.DEFAULT_HTTPS_PORT);
                 this._Wallet.node = endpoint;
                 this._Wallet.nodes = testNodesHttps;
-                _endpoint = endpoint || nem.model.objects.create("endpoint")(this._Wallet.nodes[Math.floor(Math.random()*this._Wallet.nodes.length)].uri, this.DEFAULT_HTTPS_PORT);
+                _endpoint = endpoint || nem.model.objects.create("endpoint")(this._Wallet.nodes[Math.floor(Math.random() * this._Wallet.nodes.length)].uri, this.DEFAULT_HTTPS_PORT);
             } else {
-                _endpoint = endpoint || nem.model.objects.create("endpoint")(nem.model.nodes.testnet[Math.floor(Math.random()*nem.model.nodes.testnet.length)].uri, nem.model.nodes.defaultPort);
+                _endpoint = endpoint || nem.model.objects.create("endpoint")(nem.model.nodes.testnet[Math.floor(Math.random() * nem.model.nodes.testnet.length)].uri, nem.model.nodes.defaultPort);
             }
             this._storage.selectedTestnetNode = _endpoint;
         } else {
-            _endpoint = endpoint || nem.model.objects.create("endpoint")(nem.model.nodes.mijin[Math.floor(Math.random()*nem.model.nodes.mijin.length)].uri, nem.model.nodes.mijinPort);
+            _endpoint = endpoint || nem.model.objects.create("endpoint")(nem.model.nodes.mijin[Math.floor(Math.random() * nem.model.nodes.mijin.length)].uri, nem.model.nodes.mijinPort);
             this._storage.selectedMijinNode = _endpoint;
         }
         // Set endpoint in Wallet service
@@ -185,7 +197,7 @@ class Nodes {
     cleanEndpoint(host, port) {
         // Validate host
         var regexp = /^(?:(?:https?):\/\/)?(?:\S+(?::\S*)?@)?(?:(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)(?:\.(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)*(?:\.(?:[a-z\u00a1-\uffff]{2,}))\.?)(?::\d{2,5})?(?:[/?#]\S*)?$/i;
-        if(!regexp.test(host) && (host !== 'http://localhost' && host !== 'localhost')) {
+        if (!regexp.test(host) && (host !== 'http://localhost' && host !== 'localhost')) {
             console.log("Invalid endpoint");
             return false;
         }
@@ -279,20 +291,20 @@ class Nodes {
     hasFreeSlots(endpoint) {
         if (!endpoint) return false;
         return nem.com.requests.account.unlockInfo(endpoint).then((data) => {
-            return this._$timeout(() => {
-                if (data["max-unlocked"] === data["num-unlocked"]) {
+                return this._$timeout(() => {
+                    if (data["max-unlocked"] === data["num-unlocked"]) {
+                        return false;
+                    } else {
+                        return true;
+                    }
+                });
+            },
+            (err) => {
+                return this._$timeout(() => {
+                    this._Alert.unlockedInfoError(err.data.message);
                     return false;
-                } else {
-                    return true;
-                }
+                });
             });
-        },
-        (err) => {
-            return this._$timeout(() => {
-                this._Alert.unlockedInfoError(err.data.message);
-                return false;
-            });
-        });
     }
 
     //// End methods region ////
