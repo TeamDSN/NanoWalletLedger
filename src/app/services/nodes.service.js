@@ -84,14 +84,14 @@ class Nodes {
      */
     setUtil() {
         if (this._Wallet.network === nem.model.network.data.testnet.id) {
-            if (typeof('carlo') !== 'undefined') {
+            if (typeof carlo !== 'undefined') {
                 this._Wallet.searchNode = nem.model.objects.create("endpoint")(testNodesHttps[0].uri, this.DEFAULT_HTTPS_PORT);
             } else {
                 this._Wallet.searchNode = nem.model.objects.create("endpoint")(nem.model.nodes.searchOnTestnet[0].uri, nem.model.nodes.defaultPort);
             }
             this._Wallet.chainLink = nem.model.nodes.testnetExplorer;
         } else if (this._Wallet.network === nem.model.network.data.mainnet.id) {
-            if (typeof('carlo') !== 'undefined') {
+            if (typeof carlo !== 'undefined') {
                 this._Wallet.searchNode = nem.model.objects.create("endpoint")(mainNodesHttps[0].uri, this.DEFAULT_HTTPS_PORT);
             } else {
                 this._Wallet.searchNode = nem.model.objects.create("endpoint")(nem.model.nodes.searchOnMainnet[0].uri, nem.model.nodes.defaultPort);
@@ -111,8 +111,8 @@ class Nodes {
         if (this._Wallet.network == nem.model.network.data.mainnet.id) {
             if (this._storage.selectedMainnetNode) {
                 this._Wallet.node = this._storage.selectedMainnetNode;
-                this._Wallet.nodes = mainNodesHttps;
-            } else if (typeof('carlo') !== 'undefined') {
+                this._Wallet.nodes = typeof carlo !== 'undefined' ? mainNodesHttps : nem.model.nodes.mainnet;
+            } else if (typeof carlo !== 'undefined') {
                 let endpoint = nem.model.objects.create("endpoint")('https://shibuya.supernode.me', this.DEFAULT_HTTPS_PORT);
                 this._Wallet.node = endpoint;
                 this._Wallet.nodes = mainNodesHttps;
@@ -125,8 +125,8 @@ class Nodes {
         } else if (this._Wallet.network == nem.model.network.data.testnet.id) {
             if (this._storage.selectedTestnetNode) {
                 this._Wallet.node = this._storage.selectedTestnetNode;
-                this._Wallet.nodes = testNodesHttps;
-            } else if (typeof('carlo') !== 'undefined') {
+                this._Wallet.nodes = typeof carlo !== 'undefined' ? testNodesHttps : nem.model.nodes.testnet;
+            } else if (typeof carlo !== 'undefined') {
                 let endpoint = nem.model.objects.create("endpoint")('https://planethouki.ddns.net', this.DEFAULT_HTTPS_PORT);
                 this._Wallet.node = endpoint;
                 this._Wallet.nodes = testNodesHttps;
@@ -158,7 +158,7 @@ class Nodes {
         let _endpoint;
         // Set node in local storage according to network
         if (this._Wallet.network == nem.model.network.data.mainnet.id) {
-            if (typeof('carlo') !== 'undefined') {
+            if (typeof carlo !== 'undefined') {
                 // _endpoint = nem.model.objects.create("endpoint")('https://shibuya.supernode.me', this.DEFAULT_HTTPS_PORT);
                 this._Wallet.node = endpoint;
                 this._Wallet.nodes = mainNodesHttps;
@@ -168,7 +168,7 @@ class Nodes {
             }
             this._storage.selectedMainnetNode = _endpoint;
         } else if (this._Wallet.network == nem.model.network.data.testnet.id) {
-            if (typeof('carlo') !== 'undefined') {
+            if (typeof carlo !== 'undefined') {
                 // _endpoint = nem.model.objects.create("endpoint")('https://planethouki.ddns.net', this.DEFAULT_HTTPS_PORT);
                 this._Wallet.node = endpoint;
                 this._Wallet.nodes = testNodesHttps;
@@ -219,7 +219,7 @@ class Nodes {
         } else if (port) {
             endpoint.port = port;
         } else {
-            if (typeof('carlo') !== 'undefined') {
+            if (typeof carlo !== 'undefined') {
                 endpoint.port = this.DEFAULT_HTTPS_PORT;
             } else if (this._Wallet.network === nem.model.network.data.mainnet.id) {
                 endpoint.port = nem.model.nodes.defaultPort;

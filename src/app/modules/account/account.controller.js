@@ -117,7 +117,7 @@ class AccountCtrl {
         this._Wallet.useAccount(this._Wallet.current, accountIndex);
         // Change endpoint port to websocket port
         let endpoint;
-        if (typeof('carlo') !== 'undefined') {
+        if (typeof carlo !== 'undefined') {
             endpoint = nem.model.objects.create("endpoint")(this._Wallet.node.host, 7779);
         } else {
             endpoint = nem.model.objects.create("endpoint")(this._Wallet.node.host, nem.model.nodes.websocketPort);
