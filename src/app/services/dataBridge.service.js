@@ -371,7 +371,7 @@ class DataBridge {
         // Set a random endpoint into the Wallet service
         this._Nodes.update();
         // Set websocket port to endpoint for connector
-        let endpoint = nem.model.objects.create("endpoint")(this._Wallet.node.host, this.DEFAULT_HTTPS_PORT);
+        let endpoint = nem.model.objects.create("endpoint")(this._Wallet.node.host, typeof carlo !== 'undefined' ? this.DEFAULT_HTTPS_PORT : nem.model.nodes.websocketPort);
         // Update connector
         connector = nem.com.websockets.connector.create(endpoint, this._Wallet.currentAccount.address);
         // Try to open connection
@@ -387,7 +387,7 @@ class DataBridge {
         this._Nodes.setDefault();
         this._Nodes.setUtil();
         // Change endpoint port to websocket port
-        let endpoint = nem.model.objects.create("endpoint")(this._Wallet.node.host, this.DEFAULT_HTTPS_PORT);
+        let endpoint = nem.model.objects.create("endpoint")(this._Wallet.node.host,  typeof carlo !== 'undefined' ? this.DEFAULT_HTTPS_PORT : nem.model.nodes.websocketPort);
         // Create a connector
         let connector = nem.com.websockets.connector.create(endpoint, this._Wallet.currentAccount.address);
         // Try to open the connection 
