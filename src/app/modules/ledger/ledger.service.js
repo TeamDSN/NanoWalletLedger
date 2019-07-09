@@ -37,17 +37,21 @@ class Ledger {
 
     // Service methods region //
 
-    createWallet(network, callback) {
-        const popname = window.open( "http://localhost:8080", "popname", "status=1, height=600, width=800, toolbar=0,resizable=0");
-        popname.window.focus();
+    createWallet(network) {
+        return new Promise((resolve, reject) => {
+            const popname = window.open("http://localhost:8080", "popname", "status=1, height=600, width=800, toolbar=0,resizable=0");
+            popname.window.focus();
 
-        window.addEventListener("message", function(ev) {
-            if (ev.data.message === "getAccountResult") {
-                alert("result: " + JSON.stringify(ev.data.result));
-                callback(ev.data.result);
-                ev.source.close();
-            }
-        });
+            window.addEventListener("message", function(ev) {
+                if (ev.data.message === "getAccountResult") {
+                    resolve(ev.data.result);
+                } else if (ev.data.message === "cannotGetAccount") {
+                    reject(ev.data.result.message);
+                } else if (ev.data.message === "deniedByTheUser") {
+                    reject(ev.data.result);
+                }
+            });
+        })
     }
 
     bip44(network, index) {

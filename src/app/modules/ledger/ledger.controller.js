@@ -70,12 +70,17 @@ class LedgerCtrl {
      */
     login() {
         this.okPressed = true;
-        var that = this;
-        this._Ledger.createWallet(this.network, wallet => {
-            alert('wallet: ' + JSON.stringify(wallet));
-            that._Login.login({}, wallet);
-            this.okPressed = false;
-        })
+        this._Ledger.createWallet(this.network)
+            .then(wallet => {
+                this._Login.login({}, wallet);
+                this.okPressed = false;
+            })
+            .catch(error => {
+                this._$timeout(() => {
+                    this._Alert.createWalletFailed(error);
+                });
+                this.okPressed = false;
+            });
     }
 
     //// End methods region ////
