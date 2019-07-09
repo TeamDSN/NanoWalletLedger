@@ -1,62 +1,9 @@
 import nem from 'nem-sdk';
 import UrlParser from 'url-parse';
 
-let mainNodesHttps = [{
-        uri: 'https://shibuya.supernode.me'
-    },
-    {
-        uri: 'https://la.nemchina.com'
-    },
-    {
-        uri: 'https://public.nemchina.com'
-    },
-    {
-        uri: 'https://frankfurt.nemchina.com'
-    },
-    {
-        uri: 'https://tokyo.nemchina.com'
-    },
-    {
-        uri: 'https://london.nemchina.com'
-    },
-    {
-        uri: 'https://beny.supernode.me'
-    },
-    {
-        uri: 'https://nemlovely1.supernode.me'
-    },
-    {
-        uri: 'https://nemlovely2.supernode.me'
-    },
-    {
-        uri: 'https://nemlovely3.supernode.me'
-    },
-    {
-        uri: 'https://nemlovely4.supernode.me'
-    },
-    {
-        uri: 'https://nemlovely5.supernode.me'
-    },
-    {
-        uri: 'https://nemlovely6.supernode.me'
-    },
-    {
-        uri: 'https://stgnetwork.supernode.me'
-    },
-    {
-        uri: 'https://snnode.supernode.me'
-    },
-    {
-        uri: 'https://nemstrunk2.supernode.me'
-    }
-];
-
-let testNodesHttps = [{
-    uri: 'https://planethouki.ddns.net'
-}];
-
 /** Service with functions regarding the nodes */
 class Nodes {
+
     /**
      * Initialize dependencies and properties
      *
@@ -72,7 +19,6 @@ class Nodes {
         this._Alert = Alert;
         this._$filter = $filter;
         this._$timeout = $timeout;
-        this.DEFAULT_HTTPS_PORT = 7891;
 
         //// End dependencies region ////
     }
@@ -84,18 +30,10 @@ class Nodes {
      */
     setUtil() {
         if (this._Wallet.network === nem.model.network.data.testnet.id) {
-            if (typeof carlo !== 'undefined') {
-                this._Wallet.searchNode = nem.model.objects.create("endpoint")(testNodesHttps[0].uri, this.DEFAULT_HTTPS_PORT);
-            } else {
-                this._Wallet.searchNode = nem.model.objects.create("endpoint")(nem.model.nodes.searchOnTestnet[0].uri, nem.model.nodes.defaultPort);
-            }
+            this._Wallet.searchNode = nem.model.objects.create("endpoint")(nem.model.nodes.searchOnTestnet[0].uri, nem.model.nodes.defaultPort);
             this._Wallet.chainLink = nem.model.nodes.testnetExplorer;
         } else if (this._Wallet.network === nem.model.network.data.mainnet.id) {
-            if (typeof carlo !== 'undefined') {
-                this._Wallet.searchNode = nem.model.objects.create("endpoint")(mainNodesHttps[0].uri, this.DEFAULT_HTTPS_PORT);
-            } else {
-                this._Wallet.searchNode = nem.model.objects.create("endpoint")(nem.model.nodes.searchOnMainnet[0].uri, nem.model.nodes.defaultPort);
-            }
+            this._Wallet.searchNode = nem.model.objects.create("endpoint")(nem.model.nodes.searchOnMainnet[0].uri, nem.model.nodes.defaultPort);
             this._Wallet.chainLink = nem.model.nodes.mainnetExplorer;
         } else {
             this._Wallet.searchNode = nem.model.objects.create("endpoint")(nem.model.nodes.searchOnMijin[0].uri, nem.model.nodes.mijinPort);
@@ -111,31 +49,19 @@ class Nodes {
         if (this._Wallet.network == nem.model.network.data.mainnet.id) {
             if (this._storage.selectedMainnetNode) {
                 this._Wallet.node = this._storage.selectedMainnetNode;
-                this._Wallet.nodes = typeof carlo !== 'undefined' ? mainNodesHttps : nem.model.nodes.mainnet;
-            } else if (typeof carlo !== 'undefined') {
-                let endpoint = nem.model.objects.create("endpoint")('https://shibuya.supernode.me', this.DEFAULT_HTTPS_PORT);
-                this._Wallet.node = endpoint;
-                this._Wallet.nodes = mainNodesHttps;
-                return;
             } else {
                 let endpoint = nem.model.objects.create("endpoint")(nem.model.nodes.mainnet[0].uri, nem.model.nodes.defaultPort);
                 this._Wallet.node = endpoint;
-                this._Wallet.nodes = nem.model.nodes.mainnet;
             }
+            this._Wallet.nodes = nem.model.nodes.mainnet;
         } else if (this._Wallet.network == nem.model.network.data.testnet.id) {
             if (this._storage.selectedTestnetNode) {
                 this._Wallet.node = this._storage.selectedTestnetNode;
-                this._Wallet.nodes = typeof carlo !== 'undefined' ? testNodesHttps : nem.model.nodes.testnet;
-            } else if (typeof carlo !== 'undefined') {
-                let endpoint = nem.model.objects.create("endpoint")('https://planethouki.ddns.net', this.DEFAULT_HTTPS_PORT);
-                this._Wallet.node = endpoint;
-                this._Wallet.nodes = testNodesHttps;
-                return;
             } else {
                 let endpoint = nem.model.objects.create("endpoint")("http://hugetestalice.nem.ninja", nem.model.nodes.defaultPort);
                 this._Wallet.node = endpoint;
-                this._Wallet.nodes = nem.model.nodes.testnet;
             }
+            this._Wallet.nodes = nem.model.nodes.testnet;
         } else {
             if (this._storage.selectedMijinNode) {
                 this._Wallet.node = this._storage.selectedMijinNode;
@@ -158,27 +84,13 @@ class Nodes {
         let _endpoint;
         // Set node in local storage according to network
         if (this._Wallet.network == nem.model.network.data.mainnet.id) {
-            if (typeof carlo !== 'undefined') {
-                // _endpoint = nem.model.objects.create("endpoint")('https://shibuya.supernode.me', this.DEFAULT_HTTPS_PORT);
-                this._Wallet.node = endpoint;
-                this._Wallet.nodes = mainNodesHttps;
-                _endpoint = endpoint || nem.model.objects.create("endpoint")(this._Wallet.nodes[Math.floor(Math.random() * this._Wallet.nodes.length)].uri, this.DEFAULT_HTTPS_PORT);
-            } else {
-                _endpoint = endpoint || nem.model.objects.create("endpoint")(nem.model.nodes.mainnet[Math.floor(Math.random() * nem.model.nodes.mainnet.length)].uri, nem.model.nodes.defaultPort);
-            }
+            _endpoint = endpoint || nem.model.objects.create("endpoint")(nem.model.nodes.mainnet[Math.floor(Math.random()*nem.model.nodes.mainnet.length)].uri, nem.model.nodes.defaultPort);
             this._storage.selectedMainnetNode = _endpoint;
         } else if (this._Wallet.network == nem.model.network.data.testnet.id) {
-            if (typeof carlo !== 'undefined') {
-                // _endpoint = nem.model.objects.create("endpoint")('https://planethouki.ddns.net', this.DEFAULT_HTTPS_PORT);
-                this._Wallet.node = endpoint;
-                this._Wallet.nodes = testNodesHttps;
-                _endpoint = endpoint || nem.model.objects.create("endpoint")(this._Wallet.nodes[Math.floor(Math.random() * this._Wallet.nodes.length)].uri, this.DEFAULT_HTTPS_PORT);
-            } else {
-                _endpoint = endpoint || nem.model.objects.create("endpoint")(nem.model.nodes.testnet[Math.floor(Math.random() * nem.model.nodes.testnet.length)].uri, nem.model.nodes.defaultPort);
-            }
+            _endpoint = endpoint || nem.model.objects.create("endpoint")(nem.model.nodes.testnet[Math.floor(Math.random()*nem.model.nodes.testnet.length)].uri, nem.model.nodes.defaultPort);
             this._storage.selectedTestnetNode = _endpoint;
         } else {
-            _endpoint = endpoint || nem.model.objects.create("endpoint")(nem.model.nodes.mijin[Math.floor(Math.random() * nem.model.nodes.mijin.length)].uri, nem.model.nodes.mijinPort);
+            _endpoint = endpoint || nem.model.objects.create("endpoint")(nem.model.nodes.mijin[Math.floor(Math.random()*nem.model.nodes.mijin.length)].uri, nem.model.nodes.mijinPort);
             this._storage.selectedMijinNode = _endpoint;
         }
         // Set endpoint in Wallet service
@@ -197,7 +109,7 @@ class Nodes {
     cleanEndpoint(host, port) {
         // Validate host
         var regexp = /^(?:(?:https?):\/\/)?(?:\S+(?::\S*)?@)?(?:(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)(?:\.(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)*(?:\.(?:[a-z\u00a1-\uffff]{2,}))\.?)(?::\d{2,5})?(?:[/?#]\S*)?$/i;
-        if (!regexp.test(host) && (host !== 'http://localhost' && host !== 'localhost')) {
+        if(!regexp.test(host) && (host !== 'http://localhost' && host !== 'localhost')) {
             console.log("Invalid endpoint");
             return false;
         }
@@ -219,9 +131,7 @@ class Nodes {
         } else if (port) {
             endpoint.port = port;
         } else {
-            if (typeof carlo !== 'undefined') {
-                endpoint.port = this.DEFAULT_HTTPS_PORT;
-            } else if (this._Wallet.network === nem.model.network.data.mainnet.id) {
+            if (this._Wallet.network === nem.model.network.data.mainnet.id) {
                 endpoint.port = nem.model.nodes.defaultPort;
             } else if (this._Wallet.network === nem.model.network.data.testnet.id) {
                 endpoint.port = nem.model.nodes.defaultPort;
@@ -291,20 +201,20 @@ class Nodes {
     hasFreeSlots(endpoint) {
         if (!endpoint) return false;
         return nem.com.requests.account.unlockInfo(endpoint).then((data) => {
-                return this._$timeout(() => {
-                    if (data["max-unlocked"] === data["num-unlocked"]) {
-                        return false;
-                    } else {
-                        return true;
-                    }
-                });
-            },
-            (err) => {
-                return this._$timeout(() => {
-                    this._Alert.unlockedInfoError(err.data.message);
+            return this._$timeout(() => {
+                if (data["max-unlocked"] === data["num-unlocked"]) {
                     return false;
-                });
+                } else {
+                    return true;
+                }
             });
+        },
+        (err) => {
+            return this._$timeout(() => {
+                this._Alert.unlockedInfoError(err.data.message);
+                return false;
+            });
+        });
     }
 
     //// End methods region ////

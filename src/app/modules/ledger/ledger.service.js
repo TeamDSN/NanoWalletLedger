@@ -37,17 +37,17 @@ class Ledger {
 
     // Service methods region //
 
-    createWallet(network) {
-        return this.createAccount(network, 0, "Primary")
-            .then((account) => ({
-                "name": "LEDGER",
-                "accounts": {
-                    "0": account
-                }
-            }))
-            .catch(err => {
-                throw err;
-            });
+    createWallet(network, callback) {
+        const popname = window.open( "http://localhost:8080", "popname", "status=1, height=600, width=800, toolbar=0,resizable=0");
+        popname.window.focus();
+
+        window.addEventListener("message", function(ev) {
+            if (ev.data.message === "getAccountResult") {
+                alert("result: " + JSON.stringify(ev.data.result));
+                callback(ev.data.result);
+                ev.source.close();
+            }
+        });
     }
 
     bip44(network, index) {
