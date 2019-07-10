@@ -39,7 +39,7 @@ class Ledger {
 
     createWallet(network) {
         return new Promise((resolve, reject) => {
-            const popname = window.open("http://localhost:8080", "popname", "status=1, height=600, width=800, toolbar=0,resizable=0");
+            const popname = window.open("http://localhost:8080/getWallet/" + network, "popname", "status=1, height=600, width=800, toolbar=0,resizable=0");
             popname.window.focus();
 
             window.addEventListener("message", function(ev) {
