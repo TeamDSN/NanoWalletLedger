@@ -1,5 +1,3 @@
-import NemH from "./hw-app-nem";
-import TransportWebUSB from "./hw-transport-webusb";
 import nem from "nem-sdk";
 
 /** Service storing Ledger utility functions. */
@@ -23,35 +21,21 @@ class Ledger {
         // End properties region //
 
         // Initialization
-        this.init();
-    }
-
-    /**
-     * Initialize module properties
-     */
-
-    init() {
-        // The connection between Nano Wallet and Ledger Device
-        this.nemH = undefined;
     }
 
     // Service methods region //
 
     createWallet(network) {
-        return new Promise((resolve, reject) => {
-            const popname = window.open("http://localhost:8080/getWallet/" + network, "popname", "status=1, height=600, width=800, toolbar=0,resizable=0");
-            popname.window.focus();
-
-            window.addEventListener("message", function(ev) {
-                if (ev.data.message === "getAccountResult") {
-                    resolve(ev.data.result);
-                } else if (ev.data.message === "cannotGetAccount") {
-                    reject(ev.data.result.message);
-                } else if (ev.data.message === "deniedByTheUser") {
-                    reject(ev.data.result);
+        return this.createAccount(network, 0, "Primary")
+            .then((account) => ({
+                "name": "LEDGER",
+                "accounts": {
+                    "0": account
                 }
+            }))
+            .catch((err) => {
+                throw err;
             });
-        })
     }
 
     bip44(network, index) {
@@ -61,15 +45,42 @@ class Ledger {
         return (`44'/43'/${networkId}'/${index}'/0'`);
     }
 
-    async createAccount(network, index, label) {
+    createAccount(network, index, label) {
+        alert("Follow instructions on your device. Click OK to continue.");
         const hdKeypath = this.bip44(network, index);
-        const result = await this.getAccount(hdKeypath, network, label);
-        return result;
+        return this.getAccount(hdKeypath, network, label);
     }
 
-    deriveRemote(account, network) {}
+    async getAccount(hdKeypath, network, label) {
+        var request = require('request');
+        var JSONObject = { "requestType": "getAddress", "hdKeypath": hdKeypath, "label": label, "network": network };
+
+        return new Promise((resolve, reject) => {
+            request({
+                        url: "http://localhost:21335",
+                        method: "POST",
+                        json: true,
+                        body: JSONObject
+                    },
+                    function(error, response, body) {
+                        if (error != null) {
+                            //There is a problem with the ledger-bridge
+                            // reject(new Error(error));
+                            reject("There is a problem with the ledger-bridge. Please install and check the ledger-bridge");
+                        } else if (body.message != null) {
+                            //Exporting the wallet was denied 
+                            reject(body.message);
+                        }
+                        resolve(body);
+                    })
+                .catch(() => {
+                    reject('Cannot connect to ledger connection server.');
+                });
+        });
+    }
 
     serialize(transaction, account) {
+        alert("Follow instructions on your device. Click OK to continue.");
         return new Promise(async(resolve, reject) => {
             //Transaction with testnet and mainnet
             //Correct the signer
@@ -85,56 +96,47 @@ class Ledger {
 
             let payload = await this.signTransaction(account, serializedTx)
                 .catch(err => {
-                    this._Alert.createWalletFailed(err);
+                    this._Alert.transactionError(err);
                     reject(err);
                 });
             resolve(payload);
         });
     }
 
-    showAccount(account) {}
+    signTransaction(account, serializedTx) {
+        var request = require('request');
+        var JSONObject = { "requestType": "signTransaction", "serializedTx": serializedTx, "hdKeypath": account.hdKeypath };
 
-    async getAccount(hdKeypath, network, label) {
-        const transport = await TransportWebUSB.create()
-            .catch(err => {
-                throw err.message;
-            });
-
-        this.nemH = new NemH(transport);
-
-        let result = await this.nemH.getAddress(hdKeypath)
-            .catch(err => {
-                throw err;
-            });
-        return ({
-            "brain": false,
-            "algo": "ledger",
-            "encrypted": "",
-            "iv": "",
-            "address": result.address,
-            "label": label,
-            "network": network,
-            "child": "",
-            "hdKeypath": hdKeypath,
-            "publicKey": result.publicKey
-        })
+        return new Promise(async(resolve, reject) => {
+            request({
+                        url: "http://localhost:21335",
+                        method: "POST",
+                        json: true,
+                        body: JSONObject
+                    },
+                    function(error, response, body) {
+                        if (error != null) {
+                            //There is a problem with the ledger-bridge
+                            reject("There is a problem with the ledger-bridge. Please install and check the ledger-bridge");
+                        } else if (body.message != null) {
+                            //Signing the transaction was rejected 
+                            reject(body.message);
+                        } else {
+                            //Signing transaction is successful
+                            let payload = {
+                                data: serializedTx,
+                                signature: body
+                            }
+                            resolve(payload);
+                        }
+                    })
+                .catch(() => {
+                    reject('Cannot connect to ledger connection server.');
+                });
+        });
     }
-
-    async signTransaction(account, serializedTx) {
-        let sig = await this.nemH.signTransaction(account.hdKeypath, serializedTx)
-            .catch(err => {
-                throw err;
-            });
-
-        let payload = {
-            data: serializedTx,
-            signature: sig.signature
-        }
-        return payload;
-    }
-
-    // End methods region //
-
 }
+
+// End methods region //
 
 export default Ledger;
