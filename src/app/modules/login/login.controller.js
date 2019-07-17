@@ -34,7 +34,7 @@ class LoginCtrl {
 
         // Hide trezor & ledger button if using chrome builds
         if (typeof nw !== 'undefined') this.hideTrezor = true;
-        if (typeof nw !== 'undefined') this.hideLedger = true;
+        // if (typeof nw !== 'undefined') this.hideLedger = true;
     }
 
     //// Module methods region ////
