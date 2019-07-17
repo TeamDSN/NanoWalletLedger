@@ -1,0 +1,3 @@
+[submodule "external-modules/ledger-bridge"]
+	path = external-modules/ledger-bridge
+	url = git@github.com:lethlong79/ledger-bridge.git
