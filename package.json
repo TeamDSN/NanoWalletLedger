@@ -63,10 +63,7 @@
   "scripts": {
     "test": "gulp tests browserifyTests",
     "devApp": "nw build/",
-    "cold-wallet": "node app.js",
-    "build-cold-wallet-linux-x64": "nexe app.js -r build -t linux-x64 -o nanowallet-linux-x64",
-    "build-cold-wallet-win32-x64": "nexe app.js -r build -t win32-x64 -o nanowallet-win32-x64",
-    "build-cold-wallet-macos-x64": "nexe app.js -r build -t macos-x64 -o nanowallet-macos-x64"
+    "build": "gulp && mkdir build/modules && cp -rf external-modules/ledger-bridge build/modules && cp -rf run.js build"
   },
   "repository": {
     "type": "git",
