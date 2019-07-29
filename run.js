@@ -3,7 +3,7 @@ var exec = require('child_process').execFile;
 
 var fun =function(){
    console.log("Bridge server started...");
-   exec(__dirname + '/ledger-bridge', function(err, data) {
+   exec(__dirname + '/modules/ledger-bridge/ledger-bridge', function(err, data) {
         console.log(err)
         console.log(data.toString());
     });
